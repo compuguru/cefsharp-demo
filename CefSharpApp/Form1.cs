@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,6 +55,7 @@ namespace CefSharpApp
 
             settings.CefCommandLineArgs.Add("disable-gpu", "1");
             settings.CefCommandLineArgs.Add("disable-gpu-compositing", "1");
+            settings.RemoteDebuggingPort = 8088;
 
             // Initialize cef with the provided settings
             Cef.Initialize(settings);
@@ -69,7 +72,9 @@ namespace CefSharpApp
             #endregion
 
             // Create a browser component
-            chromeBrowser = new ChromiumWebBrowser("file:///./index.html");
+            string currentDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string indexFile = Path.Combine(currentDirectory, "index.html");
+            chromeBrowser = new ChromiumWebBrowser(indexFile);
             chromeBrowser.Dock = DockStyle.Fill;
             chromeBrowser.KeyboardHandler = new DummyKeyboardHandler();
             chromeBrowser.RequestHandler = new DummyRequestHandler();
